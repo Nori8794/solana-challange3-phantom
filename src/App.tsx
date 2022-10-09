@@ -89,62 +89,71 @@ function App() {
     }
   };
 
+  /**
+   * @description  prompts user to connect wallet if it exists.
+   * This function is called when the connect wallet button is clicked
+   */
+  const disconnectWallet = async () => {
+    // @ts-ignore
+    const { solana } = window;
+
+    // checks if phantom wallet exists
+    if (solana) {
+      try {
+        // connects wallet and returns response which includes the wallet public key
+        const response = await solana.disconnect();
+        console.log("wallet account undefined");
+        // update walletKey to be the public key
+        setWalletKey(undefined);
+      } catch (err) {
+        // { code: 4001, message: 'User rejected the request.' }
+      }
+    }
+  };
+
   // HTML code for the app
   return (
     <div className="App">
       <header className="App-header">
         <h2>Connect to Phantom Wallet</h2>
+        {provider && !walletKey && (
+          <button
+            style={{
+              fontSize: "16px",
+              padding: "15px",
+              fontWeight: "bold",
+              borderRadius: "5px",
+            }}
+            onClick={connectWallet}
+          >
+            Connect Wallet
+          </button>
+        )}
+        {provider && walletKey && (
+          <div>
+            <p>Connected account: {walletKey.toString()}</p>
+            <button
+              style={{
+                fontSize: "16px",
+                padding: "15px",
+                fontWeight: "bold",
+                borderRadius: "5px",
+              }}
+              onClick={disconnectWallet}
+            >
+              Disconnect Wallet
+            </button>
+          </div>
+        )}
+        {!provider && (
+          <p>
+            No provider found. Install{" "}
+            <a href="https://phantom.app/">Phantom Browser extension</a>
+          </p>
+        )}
       </header>
-      {provider && !walletKey && (
-        <button
-          style={{
-            fontSize: "16px",
-            padding: "15px",
-            fontWeight: "bold",
-            borderRadius: "5px",
-          }}
-          onClick={connectWallet}
-        >
-          Connect Wallet
-        </button>
-      )}
-      {provider && walletKey && <p>Connected account</p>}
-
-      {!provider && (
-        <p>
-          No provider found. Install{" "}
-          <a href="https://phantom.app/">Phantom Browser extension</a>
-        </p>
-      )}
     </div>
   );
 }
 
 export default App;
-
-// import React from 'react';
-// import logo from './logo.svg';
-// import './App.css';
-
-// function App() {
-//   return (
-//     <div className="App">
-//       <header className="App-header">
-//         <img src={logo} className="App-logo" alt="logo" />
-//         <p>
-//           Edit <code>src/App.tsx</code> and save to reload.
-//         </p>
-//         <a
-//           className="App-link"
-//           href="https://reactjs.org"
-//           target="_blank"
-//           rel="noopener noreferrer"
-//         >
-//           Learn React
-//         </a>
-//       </header>
-//     </div>
-//   );
-// }
-
-// export default App;
